@@ -39,6 +39,7 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+import datetime
 assert cf
 
 """
@@ -55,8 +56,13 @@ def new_data_structs():
     manera vacía para posteriormente almacenar la información.
     """
     #TODO: Inicializar las estructuras de datos
-    pass
-
+    data = {
+        "datos" :None,
+        "date_Index": None
+    }
+    data["datos"] = lt.newList("ARRAY_LIST")
+    data["date_Index"] =  om.newMap(omaptype="BST", cmpfunction= compareDates)
+    return data
 
 # Funciones para agregar informacion al modelo
 
@@ -65,7 +71,9 @@ def add_data(data_structs, data):
     Función para agregar nuevos elementos a la lista
     """
     #TODO: Crear la función para agregar elementos a una lista
-    pass
+    lt.addLast(data_structs["datos"],data)
+    update_Date_Index(data_structs["date_Index"], data)
+    
 
 
 # Funciones para creacion de datos
@@ -77,6 +85,25 @@ def new_data(id, info):
     #TODO: Crear la función para estructurar los datos
     pass
 
+def update_Date_Index(map, evento):
+    ocurredTime  = evento["time"]
+    ocurredTime  = ocurredTime[:10]
+    eventoTime = datetime.datetime.strptime(ocurredTime,"%Y-%m-%d")
+    entry = om.get(map,eventoTime.date())
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,eventoTime.date(),evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def new_Data_Entry(evento):
+    entry = {"offenseIndex": None, "lst_events": None}
+    entry["offenseIndex"] = mp.newMap(numelements=5,
+                                     maptype="PROBING")
+    entry["lst_events"] = lt.newList("SINGLE_LINKED", compareDates)
+    lt.addLast(entry["lst_events"], evento)
+    return entry
 
 # Funciones de consulta
 
@@ -192,3 +219,14 @@ def sort(data_structs):
     """
     #TODO: Crear función de ordenamiento
     pass
+
+def compareDates(date1, date2):
+    """
+    Compara dos fechas
+    """
+    if (date1 == date2):
+        return 0
+    elif (date1 > date2):
+        return 1
+    else:
+        return -1
