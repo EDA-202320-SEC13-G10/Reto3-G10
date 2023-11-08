@@ -54,6 +54,9 @@ def load_data(control, filename):
     for evento in input_file:
         model.add_data(control,evento)
     return control
+
+def primernos_fiuankes (control):
+    return model.first_last3(control)
 # Funciones de ordenamiento
 
 def sort(control):

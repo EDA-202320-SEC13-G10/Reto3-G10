@@ -157,10 +157,14 @@ if __name__ == "__main__":
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
             data = load_data(control)
-            print(data)
+            print("eartquake event size" + str(lt.size(data["datos"])))
+            print("EARTHQUAKE RECORDS REPORT")
+            z = controller.primernos_fiuankes(data["datos"])
+            print(tabulate(z["elements"], headers = "keys" , tablefmt='grid'))
+
         elif int(inputs) == 2:
             print_req_1(control)
-            
+
 
         elif int(inputs) == 3:
             print_req_2(control)

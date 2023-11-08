@@ -197,7 +197,22 @@ def compare(data_1, data_2):
     pass
 
 # Funciones de ordenamiento
+def data_sizel(data_structs):
+    """
+    Retorna el tamaño de la lista de datos
+    """
+    return lt.size(data_structs) 
 
+def sublista(data_structs, pos_i, num):
+    s =  lt.subList(data_structs, pos_i, num)
+    return s
+
+def first_last3(data_structs):
+    primeros = sublista(data_structs,1,5)
+    ultimos = sublista(data_structs,data_sizel(data_structs)-4,5)
+    for i in lt.iterator(ultimos):
+        lt.addLast(primeros,i)
+    return primeros
 
 def sort_criteria(data_1, data_2):
     """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
