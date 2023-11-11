@@ -157,9 +157,15 @@ if __name__ == "__main__":
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
             data = load_data(control)
-            print("eartquake event size" + str(lt.size(data["datos"])))
+            print("".center(100,"-"))
+            print("eartquake event size: " + str(lt.size(data["datos_lobby"])))
+            print("".center(100,"-"))
+            print("\n")
+            print("".center(100,"="))
             print("EARTHQUAKE RECORDS REPORT")
-            z = controller.primernos_fiuankes(data["datos"])
+            print("".center(100,"="))
+            print("Printing the first 5 and last 5 records...\n")
+            z = controller.primernos_fiuankes(data["datos_lobby"])
             print(tabulate(z["elements"], headers = "keys" , tablefmt='grid'))
 
         elif int(inputs) == 2:

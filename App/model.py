@@ -61,6 +61,7 @@ def new_data_structs():
         "date_Index": None
     }
     data["datos"] = lt.newList("ARRAY_LIST")
+    data["datos_lobby"] = lt.newList("ARRAY_LIST")
     data["date_Index"] =  om.newMap(omaptype="BST", cmpfunction= compareDates)
     return data
 
@@ -72,6 +73,24 @@ def add_data(data_structs, data):
     """
     #TODO: Crear la función para agregar elementos a una lista
     lt.addLast(data_structs["datos"],data)
+    lista_posible =[""," ", None]
+    keys = ["code","time","lat","long","mag","title","depth","felt","cdi","mmi","tsunami"]
+    for i in keys:
+        i
+    datos_lobby = {} 
+    datos_lobby["code"] =  data["code"]
+    datos_lobby["time"] =  (data["time"])[:16]
+    datos_lobby["lat"] =  data["lat"]
+    datos_lobby["long"] =  data["long"]
+    datos_lobby["mag"] =  data["mag"]
+    datos_lobby["title"] =  data["title"]
+    datos_lobby["depth"] =  data["depth"]
+    datos_lobby["felt"] =  data["felt"]
+    datos_lobby["cdi"] =  data["cdi"]
+    datos_lobby["mmi"] =  data["mmi"]
+    datos_lobby["tsunami"] =  data["tsunami"]
+    lt.addLast(data_structs["datos_lobby"],datos_lobby)
+
     update_Date_Index(data_structs["date_Index"], data)
     
 
