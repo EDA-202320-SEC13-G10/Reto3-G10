@@ -74,9 +74,10 @@ def add_data(data_structs, data):
     #TODO: Crear la función para agregar elementos a una lista
     lt.addLast(data_structs["datos"],data)
     lista_posible =[""," ", None]
-    keys = ["code","time","lat","long","mag","title","depth","felt","cdi","mmi","tsunami"]
+    keys = ["mag","place","time","updated","tz","felt","cdi","mmi","alert","status","tsunami","sig","net","code","ids","sources","types","nst","dmin","rms","gap","magType","type","title","long","lat","depth"]    
     for i in keys:
-        i
+        if data[i] in lista_posible:
+            data[i] = "Unkown"
     datos_lobby = {} 
     datos_lobby["code"] =  data["code"]
     datos_lobby["time"] =  (data["time"])[:16]
@@ -88,7 +89,11 @@ def add_data(data_structs, data):
     datos_lobby["felt"] =  data["felt"]
     datos_lobby["cdi"] =  data["cdi"]
     datos_lobby["mmi"] =  data["mmi"]
-    datos_lobby["tsunami"] =  data["tsunami"]
+    if  data["tsunami"] == "0":
+        datos_lobby["tsunami"] = "False"
+    else:
+        datos_lobby["tsunami"] = "True"
+
     lt.addLast(data_structs["datos_lobby"],datos_lobby)
 
     update_Date_Index(data_structs["date_Index"], data)
