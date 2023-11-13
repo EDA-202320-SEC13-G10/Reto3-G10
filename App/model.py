@@ -62,7 +62,8 @@ def new_data_structs():
     }
     data["datos"] = lt.newList("ARRAY_LIST")
     data["datos_lobby"] = lt.newList("ARRAY_LIST")
-    data["date_Index"] =  om.newMap(omaptype="BST", cmpfunction= compareDates)
+    data["date_Index"] =  om.newMap(omaptype="BST")
+    data["mag_Index"] =  om.newMap(omaptype="BST")
     return data
 
 # Funciones para agregar informacion al modelo
@@ -74,7 +75,11 @@ def add_data(data_structs, data):
     #TODO: Crear la función para agregar elementos a una lista
     lt.addLast(data_structs["datos"],data)
     lista_posible =[""," ", None]
-    keys = ["mag","place","time","updated","tz","felt","cdi","mmi","alert","status","tsunami","sig","net","code","ids","sources","types","nst","dmin","rms","gap","magType","type","title","long","lat","depth"]    
+    keys = ["mag","place","time","updated","tz","felt",
+            "cdi","mmi","alert","status","tsunami","sig",
+            "net","code","ids","sources","types","nst",
+            "dmin","rms","gap","magType","type","title",
+            "long","lat","depth"]    
     for i in keys:
         if data[i] in lista_posible:
             data[i] = "Unkown"
@@ -95,8 +100,8 @@ def add_data(data_structs, data):
         datos_lobby["tsunami"] = "True"
 
     lt.addLast(data_structs["datos_lobby"],datos_lobby)
-
     update_Date_Index(data_structs["date_Index"], data)
+    update_mag_Index(data_structs["mag_Index"], data)
     
 
 
@@ -111,8 +116,8 @@ def new_data(id, info):
 
 def update_Date_Index(map, evento):
     ocurredTime  = evento["time"]
-    ocurredTime  = ocurredTime[:10]
-    eventoTime = datetime.datetime.strptime(ocurredTime,"%Y-%m-%d")
+    ocurredTime  = ocurredTime[:16]
+    eventoTime = datetime.datetime.strptime(ocurredTime,"%Y-%m-%dT%H:%M")
     entry = om.get(map,eventoTime.date())
     if entry is None:
         evento_entry = new_Data_Entry(evento)
@@ -121,11 +126,20 @@ def update_Date_Index(map, evento):
         evento_entry = me.getValue(entry)    
     return map
 
+def update_mag_Index(map, evento):
+    mag  = evento["mag"]
+    entry = om.get(map,mag)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,mag,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
 def new_Data_Entry(evento):
-    entry = {"offenseIndex": None, "lst_events": None}
-    entry["offenseIndex"] = mp.newMap(numelements=5,
-                                     maptype="PROBING")
-    entry["lst_events"] = lt.newList("SINGLE_LINKED", compareDates)
+    entry = { "lst_events": None}
+
+    entry["lst_events"] = lt.newList("ARRAY_LIST", compareDates)
     lt.addLast(entry["lst_events"], evento)
     return entry
 
@@ -147,15 +161,46 @@ def data_size(data_structs):
     pass
 
 
-def req_1(data_structs):
+def req_1(data_structs,initialDate,finalDate):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
-    pass
+    initialDate = datetime.datetime.strptime(initialDate, "%Y-%m-%dT%H:%M")
+    finalDate = datetime.datetime.strptime(finalDate, "%Y-%m-%dT%H:%M")
+    lst = om.values(data_structs["date_Index"], initialDate.date(), finalDate.date())
+    lst1 = om.keys(data_structs["date_Index"], initialDate.date(), finalDate.date())
+    totalevents = 0
+    for lstdate in lt.iterator(lst):
+        totalevents += lt.size(lstdate["lst_events"])
+    h = lt.newList("ARRAY_LIST")
 
+    for l in lt.iterator(lst1):
+        k = {}
+        events_in_l = om.get(data_structs["date_Index"],l)
+        k["Line"] = l
+        k["events"] = lt.size(events_in_l['value']['lst_events'])
+        k["details"] = []
+        for y in events_in_l['value']['lst_events']["elements"]:
+            dict_new = {}
+            dict_new["mag"] =  y["mag"]
+            dict_new["lat"] =  y["lat"]
+            dict_new["long"] =  y["long"]
+            dict_new["depth"] =  y["depth"]
+            dict_new["sig"] =  y["sig"]
+            dict_new["gap"] =  y["gap"]
+            dict_new["nst"] =  y["nst"]
+            dict_new["title"] =  y["title"]
+            dict_new["mmi"] =  y["mmi"]
+            dict_new["magType"] =  y["magType"]
+            dict_new["type"] =  y["type"]
+            dict_new["code"] =  y["code"]
+            k["details"].append(dict_new)
+        lt.addLast(h,k)
+        merg.sort(h,compareDates1)
+    return h
 
-def req_2(data_structs):
+def req_2(data_structs, lim_inf,lim_sup):
     """
     Función que soluciona el requerimiento 2
     """
@@ -265,7 +310,12 @@ def compareDates(date1, date2):
     """
     if (date1 == date2):
         return 0
-    elif (date1 > date2):
-        return 1
-    else:
+    elif (date1 < date2):
         return -1
+    else:
+        return 1
+def compareDates1(date1, date2):
+    """
+    Compara dos fechas
+    """
+    return (date1["Line"] > date2["Line"])

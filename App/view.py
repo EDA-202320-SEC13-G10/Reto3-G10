@@ -81,8 +81,12 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
+    initialDate = "1999-03-21T05:00"
+    finalDate = "2004-10-23T17:30"
     # TODO: Imprimir el resultado del requerimiento 1
-    pass
+    l1= controller.req_1(control,initialDate,finalDate)
+    print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
+
 
 
 def print_req_2(control):
@@ -165,9 +169,8 @@ if __name__ == "__main__":
             print("EARTHQUAKE RECORDS REPORT")
             print("".center(100,"="))
             print("Printing the first 5 and last 5 records...\n")
-            z = controller.primernos_fiuankes(data["datos_lobby"])
-            print(tabulate(z["elements"], headers = "keys" , tablefmt='grid'))
-
+            z = controller.primernos_fiuankes(data["mag_lobby"])
+            print(tabulate(lt.iterator(z),headers="keys", tablefmt = "grid", showindex=False))
         elif int(inputs) == 2:
             print_req_1(control)
 
