@@ -205,7 +205,12 @@ def req_2(data_structs, lim_inf,lim_sup):
     Función que soluciona el requerimiento 2
     """
     # TODO: Realizar el requerimiento 2
-    pass
+    lst1 = om.keys(data_structs["mag_Index"], lim_inf, lim_sup)
+    lst = om.values(data_structs["mag_Index"], lim_inf, lim_sup)
+    totalevents = 0
+    for lstdate in lt.iterator(lst):
+        totalevents += lt.size(lstdate["lst_events"])
+    h = lt.newList("ARRAY_LIST")
 
 
 def req_3(data_structs):
