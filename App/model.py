@@ -64,6 +64,8 @@ def new_data_structs():
     data["datos_lobby"] = lt.newList("ARRAY_LIST")
     data["date_Index"] =  om.newMap(omaptype="BST")
     data["mag_Index"] =  om.newMap(omaptype="BST")
+    data["gap_Index"] =  om.newMap(omaptype="BST")
+    data["sig_Index"] =  om.newMap(omaptype="BST")
     return data
 
 # Funciones para agregar informacion al modelo
@@ -102,6 +104,8 @@ def add_data(data_structs, data):
     lt.addLast(data_structs["datos_lobby"],datos_lobby)
     update_Date_Index(data_structs["date_Index"], data)
     update_mag_Index(data_structs["mag_Index"], data)
+    update_gap_Index(data_structs["gap_Index"], data)
+    update_sig_Index(data_structs["sig_Index"], data)
     
 
 
@@ -132,6 +136,26 @@ def update_mag_Index(map, evento):
     if entry is None:
         evento_entry = new_Data_Entry(evento)
         om.put(map,mag,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def update_gap_Index(map, evento):
+    gap  = evento["gap"]
+    entry = om.get(map,gap)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,gap,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def update_sig_Index(map, evento):
+    sig  = evento["sig"]
+    entry = om.get(map,sig)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,sig,evento_entry)
     else:
         evento_entry = me.getValue(entry)    
     return map
@@ -221,13 +245,37 @@ def req_3(data_structs):
     pass
 
 
-def req_4(data_structs):
+def req_4(data_structs, sig_min, gap_max):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    pass
-
+    gap = data_structs["gap_Index"]
+    sig = data_structs["sig_Index"]
+    gaps = om.values(gap, str(om.minKey(gap)), str(gap_max))
+    sigs = om.values(sig, str(sig_min), str(om.maxKey(sig)))
+    sig_y_gap = lt.newList("ARRAY_LIST")
+    # sigs = om.values(mapa, str(sig_min), om.maxKey())
+    for i in lt.iterator(gaps):
+        for j in lt.iterator(sigs):
+            if i["lst_events"]["elements"][0]["time"] == j["lst_events"]["elements"][0]["time"]:
+                x = {}
+                x["time"] = i["lst_events"]["elements"][0]["time"]
+                x["mag"] = i["lst_events"]["elements"][0]["mag"]
+                x["lat"] = i["lst_events"]["elements"][0]["lat"]
+                x["long"] = i["lst_events"]["elements"][0]["long"]
+                x["depth"] = i["lst_events"]["elements"][0]["depth"]
+                x["sig"] = i["lst_events"]["elements"][0]["sig"]
+                x["gap"] = i["lst_events"]["elements"][0]["gap"]
+                x["nst"] = i["lst_events"]["elements"][0]["nst"]
+                x["title"] = i["lst_events"]["elements"][0]["title"]
+                x["cdi"] = i["lst_events"]["elements"][0]["cdi"]
+                x["magType"] = i["lst_events"]["elements"][0]["magType"]
+                x["type"] = i["lst_events"]["elements"][0]["type"]
+                x["code"] = i["lst_events"]["elements"][0]["code"]
+                lt.addLast(sig_y_gap, x)
+    return lt.size(sig_y_gap), sig_y_gap
+                
 
 def req_5(data_structs):
     """

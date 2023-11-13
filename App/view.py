@@ -105,12 +105,14 @@ def print_req_3(control):
     pass
 
 
-def print_req_4(control):
+def print_req_4(control, sig_min, gap_max):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    cant, sig_y_max = controller.req_4(control, sig_min, gap_max)
+    print(cant)
+    print(tabulate(lt.iterator(sig_y_max),headers="keys", tablefmt = "grid", showindex=False))
 
 
 def print_req_5(control):
@@ -169,8 +171,6 @@ if __name__ == "__main__":
             print("EARTHQUAKE RECORDS REPORT")
             print("".center(100,"="))
             print("Printing the first 5 and last 5 records...\n")
-            z = controller.primernos_fiuankes(data["mag_lobby"])
-            print(tabulate(lt.iterator(z),headers="keys", tablefmt = "grid", showindex=False))
         elif int(inputs) == 2:
             print_req_1(control)
 
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             print_req_3(control)
 
         elif int(inputs) == 5:
-            print_req_4(control)
+            print_req_4(control, 300, 45.0)
 
         elif int(inputs) == 6:
             print_req_5(control)

@@ -101,13 +101,13 @@ def req_3(control):
     pass
 
 
-def req_4(control):
+def req_4(control, sig_min, gap_max):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    pass
-
+    cant, sig_y_max = model.req_4(control, sig_min, gap_max)
+    return cant, sig_y_max
 
 def req_5(control):
     """
