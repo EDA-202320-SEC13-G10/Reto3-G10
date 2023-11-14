@@ -115,13 +115,14 @@ def print_req_4(control, sig_min, gap_max):
     print(tabulate(lt.iterator(sig_y_max),headers="keys", tablefmt = "grid", showindex=False))
 
 
-def print_req_5(control):
+def print_req_5(control, min_depth, min_nst):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 5
-    pass
-
+    cant, dep_y_nst = controller.req_5(control, min_depth, min_nst)
+    print(cant)
+    print(tabulate(lt.iterator(dep_y_nst),headers="keys", tablefmt = "grid", showindex=False))
 
 def print_req_6(control):
     """
@@ -131,13 +132,17 @@ def print_req_6(control):
     pass
 
 
-def print_req_7(control):
+def print_req_7(control, year, area, prop, bi):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    pass
-
+    cant_year, cant_hist, min_value, max_value, hist_list = controller.req_7(control, year, area, prop, bi)
+    print(cant_year)
+    print(cant_hist)
+    print(min_value)
+    print(max_value)
+    print(tabulate(lt.iterator(hist_list),headers="keys", tablefmt = "grid", showindex=False))
 
 def print_req_8(control):
     """
@@ -182,16 +187,16 @@ if __name__ == "__main__":
             print_req_3(control)
 
         elif int(inputs) == 5:
-            print_req_4(control, 300, 45.0)
+            print_req_4(control, 300, 45)
 
         elif int(inputs) == 6:
-            print_req_5(control)
+            print_req_5(control, 23, 38)
 
         elif int(inputs) == 7:
             print_req_6(control)
 
         elif int(inputs) == 8:
-            print_req_7(control)
+            print_req_7(control, 2020, "Alaska", "mag", 10)
 
         elif int(inputs) == 9:
             print_req_8(control)

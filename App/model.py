@@ -39,7 +39,9 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+import time as tm
 import datetime
+import matplotlib.pyplot as plt
 assert cf
 
 """
@@ -66,6 +68,8 @@ def new_data_structs():
     data["mag_Index"] =  om.newMap(omaptype="BST")
     data["gap_Index"] =  om.newMap(omaptype="BST")
     data["sig_Index"] =  om.newMap(omaptype="BST")
+    data["depth_Index"] =  om.newMap(omaptype="BST")
+    data["nst_Index"] =  om.newMap(omaptype="BST")
     return data
 
 # Funciones para agregar informacion al modelo
@@ -106,8 +110,8 @@ def add_data(data_structs, data):
     update_mag_Index(data_structs["mag_Index"], data)
     update_gap_Index(data_structs["gap_Index"], data)
     update_sig_Index(data_structs["sig_Index"], data)
-    
-
+    update_depth_Index(data_structs["depth_Index"], data)
+    update_nst_Index(data_structs["nst_Index"], data)
 
 # Funciones para creacion de datos
 
@@ -159,6 +163,27 @@ def update_sig_Index(map, evento):
     else:
         evento_entry = me.getValue(entry)    
     return map
+
+def update_depth_Index(map, evento):
+    depth  = evento["depth"]
+    entry = om.get(map,depth)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,depth,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def update_nst_Index(map, evento):
+    nst  = evento["nst"]
+    entry = om.get(map,nst)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,nst,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
 
 def new_Data_Entry(evento):
     entry = { "lst_events": None}
@@ -255,34 +280,60 @@ def req_4(data_structs, sig_min, gap_max):
     gaps = om.values(gap, str(om.minKey(gap)), str(gap_max))
     sigs = om.values(sig, str(sig_min), str(om.maxKey(sig)))
     sig_y_gap = lt.newList("ARRAY_LIST")
-    # sigs = om.values(mapa, str(sig_min), om.maxKey())
     for i in lt.iterator(gaps):
-        for j in lt.iterator(sigs):
-            if i["lst_events"]["elements"][0]["time"] == j["lst_events"]["elements"][0]["time"]:
-                x = {}
-                x["time"] = i["lst_events"]["elements"][0]["time"]
-                x["mag"] = i["lst_events"]["elements"][0]["mag"]
-                x["lat"] = i["lst_events"]["elements"][0]["lat"]
-                x["long"] = i["lst_events"]["elements"][0]["long"]
-                x["depth"] = i["lst_events"]["elements"][0]["depth"]
-                x["sig"] = i["lst_events"]["elements"][0]["sig"]
-                x["gap"] = i["lst_events"]["elements"][0]["gap"]
-                x["nst"] = i["lst_events"]["elements"][0]["nst"]
-                x["title"] = i["lst_events"]["elements"][0]["title"]
-                x["cdi"] = i["lst_events"]["elements"][0]["cdi"]
-                x["magType"] = i["lst_events"]["elements"][0]["magType"]
-                x["type"] = i["lst_events"]["elements"][0]["type"]
-                x["code"] = i["lst_events"]["elements"][0]["code"]
-                lt.addLast(sig_y_gap, x)
+        for i2 in i["lst_events"]["elements"]:
+            for j in lt.iterator(sigs):
+                for j2 in j["lst_events"]["elements"]:
+                    if i2["time"] == j2["time"]:
+                        x = {}
+                        x["time"] = i2["time"]
+                        x["mag"] = i2["mag"]
+                        x["lat"] = i2["lat"]
+                        x["long"] = i2["long"]
+                        x["depth"] = i2["depth"]
+                        x["sig"] = i2["sig"]
+                        x["gap"] = i2["gap"]
+                        x["nst"] = i2["nst"]
+                        x["title"] = i2["title"]
+                        x["cdi"] = i2["cdi"]
+                        x["magType"] = i2["magType"]
+                        x["type"] = i2["type"]
+                        x["code"] = i2["code"]
+                        lt.addLast(sig_y_gap, x)
     return lt.size(sig_y_gap), sig_y_gap
                 
 
-def req_5(data_structs):
+def req_5(data_structs, min_depth, min_nst):
     """
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
-    pass
+    depth = data_structs["depth_Index"]
+    nst = data_structs["nst_Index"]
+    depths = om.values(depth, str(min_depth), str(om.maxKey(depth)))
+    nsts = om.values(nst, str(min_nst), str(om.maxKey(nst)))
+    dep_y_nst = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(depths):
+        for i2 in i["lst_events"]["elements"]:
+            for j in lt.iterator(nsts):
+                for j2 in j["lst_events"]["elements"]:
+                    if i2["time"] == j2["time"]:
+                        x = {}
+                        x["time"] = i2["time"]
+                        x["mag"] = i2["mag"]
+                        x["lat"] = i2["lat"]
+                        x["long"] = i2["long"]
+                        x["depth"] = i2["depth"]
+                        x["sig"] = i2["sig"]
+                        x["gap"] = i2["gap"]
+                        x["nst"] = i2["nst"]
+                        x["title"] = i2["title"]
+                        x["cdi"] = i2["cdi"]
+                        x["magType"] = i2["magType"]
+                        x["type"] = i2["type"]
+                        x["code"] = i2["code"]
+                        lt.addLast(dep_y_nst, x)
+    return lt.size(dep_y_nst), dep_y_nst
 
 
 def req_6(data_structs):
@@ -293,12 +344,38 @@ def req_6(data_structs):
     pass
 
 
-def req_7(data_structs):
+def req_7(data_structs, year, area, prop, bi):
     """
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
-    pass
+    yea = data_structs["date_Index"]
+    years = om.values(yea, str(year), str(year))
+    cant_year = 0
+    cant_hist = 0
+    hist_list = lt.newList("ARRAY_LIST")
+    values = []
+    for i in years:
+        for i2 in i["lst_events"]["elements"]:
+            cant_year += 1
+            if area in i2["title"]:
+                x = {}
+                cant_hist += 1
+                x["time"] = i2["time"]
+                x["lat"] = i2["lat"]
+                x["long"] = i2["long"]
+                x["title"] = i2["title"]
+                x["code"] = i2["code"]
+                x[prop] = i2[prop]
+                values.append(float(i2[prop]))
+                lt.addLast(hist_list, x)
+    titulo = "Histogram of '"+prop+"' in '"+area+"' in '"+str(year)+"'"
+    plt.hist(values, bins = bi)
+    plt.ylabel("No. Events")
+    plt.xlabel(prop)
+    plt.title(titulo)
+    plt.show()
+    return cant_year, cant_hist, min(values), max(values), hist_list        
 
 
 def req_8(data_structs):
