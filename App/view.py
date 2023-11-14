@@ -81,10 +81,26 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
+    print("Req No. 1 Input".center(130,"="))
+
+    initialDate =  input("Start date: ")
+    finalDate =  input("End date: ")
+
+    
+
     initialDate = "1999-03-21T05:00"
     finalDate = "2004-10-23T17:30"
+    l1,l2,l3= controller.req_1(control,initialDate,finalDate)
+    print("Req No. 1 Results".center(130,"="))
+    print(("Total different dates: " +str(l3)))
+    print(("Total events between dates: " +str(l2)))
+
     # TODO: Imprimir el resultado del requerimiento 1
-    l1= controller.req_1(control,initialDate,finalDate)
+    if l3 > 6:
+        print("Consults size: "+ str(l3) +" Only first and last '3' results are:")
+    else:
+        print("Consults size: "+ str(l3))
+ 
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
 
 
@@ -94,7 +110,10 @@ def print_req_2(control):
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    print("Req No. 2 Input".center(130,"="))
+
+    initialDate =  input("Total diffrent magnitudes: ")
+    finalDate =  input("End date: ")
 
 
 def print_req_3(control):
@@ -169,7 +188,7 @@ if __name__ == "__main__":
             print("EARTHQUAKE RECORDS REPORT")
             print("".center(100,"="))
             print("Printing the first 5 and last 5 records...\n")
-            z = controller.primernos_fiuankes(data["mag_lobby"])
+            z = controller.primernos_fiuankes(data["datos_lobby"])
             print(tabulate(lt.iterator(z),headers="keys", tablefmt = "grid", showindex=False))
         elif int(inputs) == 2:
             print_req_1(control)

@@ -56,7 +56,7 @@ def load_data(control, filename):
     return control
 
 def primernos_fiuankes (control):
-    return model.first_last3(control)
+    return model.first_last5(control)
 # Funciones de ordenamiento
 
 def sort(control):
@@ -82,7 +82,11 @@ def req_1(control,initialDate,finalDate):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    return model.req_1(control,initialDate,finalDate)
+    L1, L2, L3 = model.req_1(control,initialDate,finalDate)
+    if L3 >6:
+        L1 = model.first_last3(L1)
+
+    return L1, L2, L3
 
 
 def req_2(control):
