@@ -112,7 +112,7 @@ def print_req_4(control, sig_min, gap_max):
     # TODO: Imprimir el resultado del requerimiento 4
     cant, sig_y_max = controller.req_4(control, sig_min, gap_max)
     print(cant)
-    print(tabulate(lt.iterator(sig_y_max),headers="keys", tablefmt = "grid", showindex=False))
+    # print(tabulate(lt.iterator(sig_y_max),headers="keys", tablefmt = "grid", showindex=False))
 
 
 def print_req_5(control, min_depth, min_nst):
