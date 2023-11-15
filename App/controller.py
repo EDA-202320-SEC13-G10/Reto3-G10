@@ -94,11 +94,11 @@ def req_2(control,mag_i,mag_f):
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    L1, L2, L3 = model.req_2(control,mag_i,mag_f)
+    L1, L2, L3,lista_folium = model.req_2(control,mag_i,mag_f)
     if L2 >6:
             L1 = model.first_last3(L1)
 
-    return L1, L2, L3
+    return L1, L2, L3, lista_folium
 
 def req_3(control,mag_i,depth_max):
     """

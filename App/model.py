@@ -246,6 +246,8 @@ def req_2(data_structs, lim_inf,lim_sup):
     for lstdate in lt.iterator(lst):
         totalevents += lt.size(lstdate["lst_events"])
     h = lt.newList("ARRAY_LIST")
+    lista_folium = []
+
     for l in lt.iterator(lst1):
         k = {}
         events_in_l = om.get(data_structs["mag_Index"],l)
@@ -253,6 +255,8 @@ def req_2(data_structs, lim_inf,lim_sup):
         k["events"] = lt.size(events_in_l['value']['lst_events'])
         k["details"] = lt.newList("ARRAY_LIST")
         for y in events_in_l['value']['lst_events']["elements"]:
+            lista_per_lista =[y["lat"],y["long"]]
+            lista_folium.append(lista_per_lista)   
             dict_new = {}
             dict_new["time"] =  y["time"]
             dict_new["lat"] =  y["lat"]
@@ -276,7 +280,7 @@ def req_2(data_structs, lim_inf,lim_sup):
     
     quk.sort(h,compareMag_req2)
 
-    return h , totalmags,totalevents
+    return h , totalmags,totalevents, lista_folium
 
 def req_3(data_structs, mag_min, depth_max):
     """

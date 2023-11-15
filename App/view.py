@@ -105,6 +105,7 @@ def print_req_1(control):
         print("Consults size: "+ str(l3))
  
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
+    
     m = fol.Map(tiles="cartodbpositron")
 
     geojson_data = requests.get(
@@ -132,7 +133,7 @@ def print_req_2(control):
     mag_i =  float(input("Magnitud inicial: "))
     mag_f =  float(input("Magnitud final: "))
     print("Req No. 2 Results".center(130,"="))
-    l1,l2,l3= controller.req_2(control,mag_i,mag_f)
+    l1,l2,l3,foliumsLista= controller.req_2(control,mag_i,mag_f)
 
     print(("Total different magnitudes: " +str(l2)))
     print(("Total events between magnitudes: " +str(l3)))
@@ -143,7 +144,22 @@ def print_req_2(control):
     else:
         print("Consults size: "+ str(l2))
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
+    m = fol.Map(tiles="cartodbpositron")
 
+    geojson_data = requests.get(
+    "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/world_countries.json"
+).json()
+    fol.GeoJson(geojson_data, name="hello world").add_to(m)
+
+    fol.LayerControl().add_to(m)
+
+    for i in (foliumsLista):
+            fol.Marker(
+                location=i,
+                icon=fol.Icon(icon="cloud"),
+            ).add_to(m)
+    m.save("footprint.html")
+    webbrowser.open("footprint.html")
 def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
