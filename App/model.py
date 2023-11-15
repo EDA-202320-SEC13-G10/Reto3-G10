@@ -307,14 +307,36 @@ def req_3(data_structs, mag_min, depth_max):
 
     return lista_tabla,d_dates,d_events
 
-def req_4(data_structs):
+def req_4(data_structs, sig_min, gap_max):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    pass
+    dat = data_structs["gap_Index"]
+    datos = om.valueSet(dat)
+    sig_y_gap = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(datos):
+        for j in i["lst_events"]["elements"]:
+            if j["gap"] != "Unknown" and j["sig"] != "Unknown":
+                if float(j["gap"]) <= float(gap_max) and float(j["sig"]) >= float(sig_min):
+                    x = {}
+                    x["time"] = j["time"]
+                    x["mag"] = j["mag"]
+                    x["lat"] = j["lat"]
+                    x["long"] = j["long"]
+                    x["depth"] = j["depth"]
+                    x["sig"] = j["sig"]
+                    x["gap"] = j["gap"]
+                    x["nst"] = j["nst"]
+                    x["title"] = j["title"]
+                    x["cdi"] = j["cdi"]
+                    x["magType"] = j["magType"]
+                    x["type"] = j["type"]
+                    x["code"] = j["code"]
+                    lt.addLast(sig_y_gap, x)
+    return lt.size(sig_y_gap), sig_y_gap
 
-def req_5(data_structs):
+def req_5(data_structs, min_depth, min_nst):
     """
     Función que soluciona el requerimiento 5
     """
@@ -325,7 +347,7 @@ def req_5(data_structs):
     for i in lt.iterator(datos):
         for j in i["lst_events"]["elements"]:
             if j["depth"] != "Unknown" and j["nst"] != "Unknown":
-                if float(j["depth"]) >= min_depth and float(j["nst"]) >= min_nst:
+                if float(j["depth"]) >= float(min_depth) and float(j["nst"]) >= float(min_nst):
                     x = {}
                     x["time"] = j["time"]
                     x["mag"] = j["mag"]
@@ -418,7 +440,7 @@ def req_6(data_structs,anio,lat,long,radio,n):
         presentacion = sublista(presentacion,1,n)
     return principal, presentacion, tamanio
 
-def req_7(data_structs):
+def req_7(data_structs, year, area, prop, bi):
     """
     Función que soluciona el requerimiento 7
     """
@@ -432,7 +454,7 @@ def req_7(data_structs):
     for i in lt.iterator(datos):
         for j in i["lst_events"]["elements"]:
             if j["time"] != "Unknown" and j["title"] != "Unknown" and j[prop] != "Unknown":
-                if float(j["time"][:4]) == year:
+                if float(j["time"][:4]) == float(year):
                     cant_year += 1
                     if area in j["title"]:
                         cant_hist += 1

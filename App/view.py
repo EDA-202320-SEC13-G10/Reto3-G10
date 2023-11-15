@@ -163,19 +163,40 @@ def print_req_3(control):
     else:
         print("Consults size: "+ str(l2))
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
+    
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    print("Req No. 4 Input".center(130,"="))
+    sig_min =  (input("sig minimo: "))
+    gap_max =  (input("gap maximo: "))
+    
+
+    print("Req No. 4 Results".center(130,"="))
+    cant, sig_y_max = controller.req_4(control, sig_min, gap_max)
+    
+    print("Número de eventos sismicos encontrados "+ str(cant))
+    print("Eventos sismicos del sig minimo, y gap maximo")
+    print(tabulate(sig_y_max,headers="keys", tablefmt = "grid", showindex=False))
 
 def print_req_5(control):
     """
         Función que imprime la solución del Requerimiento 5 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 5
-    pass
+    print("Req No. 5 Input".center(130,"="))
+    min_depth =  (input("Profundidad minima: "))
+    min_nst =  (input("NST minimo: "))
+    
+
+    print("Req No. 5 Results".center(130,"="))
+    cant, dep_y_nst = controller.req_5(control, min_depth, min_nst)
+    
+    print("Número de eventos sismicos encontrados "+ str(cant))
+    print("Eventos sismicos del depth minimo, y NST minimo")
+    print(tabulate(dep_y_nst,headers="keys", tablefmt = "grid", showindex=False))
 
 def print_req_6(control):
     """
@@ -204,8 +225,22 @@ def print_req_7(control):
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    print("Req No. 7 Input".center(130,"="))
+    year =  (input("Año: "))
+    area =  (input("Area: "))
+    prop =  (input("Propiedad de conteo: "))
+    bi =  float(input("Número de segmentos: "))
 
+    print("Req No. 7 Results".center(130,"="))
+    cant_year, cant_hist, min_value, max_value, hist_list = controller.req_7(control, year, area, prop, bi)
+
+    print("Número de eventos sismicos para el año "+ str(year)+": " +str(cant_year))
+    print("Número de eventos sismicos para el año "+ str(year)+" en "+area+": " +str(cant_hist))
+    print("Valor minimo: "+str(min_value))
+    print("Valor minimo: "+str(max_value))
+    print("Eventos sismicos del año "+str(year)+" en "+area)
+    print(tabulate(hist_list,headers="keys", tablefmt = "grid", showindex=False))
+    
 
 def print_req_8(control):
     """
