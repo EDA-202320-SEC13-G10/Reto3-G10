@@ -146,7 +146,7 @@ def update_Date_Index(map, evento):
     return map
 
 def update_mag_Index(map, evento):
-    mag  = evento["mag"]
+    mag  = float(evento["mag"])
     entry = om.get(map,mag)
     if entry is None:
         evento_entry = new_Data_Entry(evento)
@@ -236,6 +236,7 @@ def req_2(data_structs, lim_inf,lim_sup):
     lst1 = om.keys(data_structs["mag_Index"], lim_inf, lim_sup)
     lst = om.values(data_structs["mag_Index"], lim_inf, lim_sup)
     totalevents = 0
+    totalmags = lt.size(lst1)
     for lstdate in lt.iterator(lst):
         totalevents += lt.size(lstdate["lst_events"])
     h = lt.newList("ARRAY_LIST")
@@ -244,7 +245,7 @@ def req_2(data_structs, lim_inf,lim_sup):
         events_in_l = om.get(data_structs["mag_Index"],l)
         k["mag"] = l
         k["events"] = lt.size(events_in_l['value']['lst_events'])
-        k["details"] = []
+        k["details"] = lt.newList("ARRAY_LIST")
         for y in events_in_l['value']['lst_events']["elements"]:
             dict_new = {}
             dict_new["time"] =  y["time"]
@@ -260,21 +261,28 @@ def req_2(data_structs, lim_inf,lim_sup):
             dict_new["magType"] =  y["magType"]
             dict_new["type"] =  y["type"]
             dict_new["code"] =  y["code"]
-            k["details"].append(dict_new)
-            
-        k["details"] =  tabulate(k["details"], headers="keys", tablefmt="grid", showindex= False)
+            lt.addLast(k["details"],dict_new)
+        quk.sort(k["details"],compareDates_req1)
+        if lt.size(k["details"]) > 6:
+            k["details"] = first_last3(k["details"])
+        k["details"] =  tabulate(lt.iterator(k["details"]), headers="keys", tablefmt="grid", showindex= False)
         lt.addLast(h,k)
-    return h
+    
+    quk.sort(h,compareMag_req2)
+
+    return h , totalmags,totalevents
 
 def req_3(data_structs, mag_min, depth_max):
     """
     Función que soluciona el requerimiento 3
     """
-    lst1 = om.keys(data_structs["mag_Index"], 4.700, 10.000)
+    lst1 = om.keys(data_structs["mag_Index"], mag_min, 10.000)
 
     # TODO: Realizar el requerimiento 3
 
     lista_tabla = lt.newList("ARRAY_LIST")
+    d_dates = 0
+    d_events = 0
     mp1 = om.newMap(omaptype = 'RBT')
     for l in lt.iterator(lst1):
         events_in_l = om.get(data_structs["mag_Index"],l)
@@ -289,12 +297,14 @@ def req_3(data_structs, mag_min, depth_max):
                     fecha_entry = me.getValue(entry)
                     lt.addLast(fecha_entry["lst_events"], y)
     lst_key_mp1 = om.keySet(mp1)
+    d_dates = lt.size(lst_key_mp1)
     for key in lt.iterator(lst_key_mp1):
         dict_append = {}
         valor =  om.get(mp1,key)
         size = lt.size(valor['value']['lst_events'])
-        dict_append["Time"] = key
+        dict_append["time"] = key
         dict_append["events"] = size
+        d_events += size
         dict_append["details"] = []
         for y in lt.iterator(valor['value']['lst_events']):
                 dict_new = {}
@@ -314,8 +324,9 @@ def req_3(data_structs, mag_min, depth_max):
                 dict_append["details"].append(dict_new)
         dict_append["details"] =  tabulate(dict_append["details"], headers="keys", tablefmt="grid", showindex= False)
         lt.addLast(lista_tabla,dict_append)
+    quk.sort(lista_tabla,compareDates_req1)    
 
-    return lista_tabla
+    return lista_tabla,d_dates,d_events
 
 def req_4(data_structs):
     """
@@ -344,6 +355,7 @@ def req_6(data_structs,anio,lat,long,radio,n):
     """
     Función que soluciona el requerimiento 6
     """
+
     # TODO: Realizar el requerimiento 6
     data =  data_structs["anio_Index"]
     maps_date  = om.newMap(omaptype="BST")
@@ -361,8 +373,10 @@ def req_6(data_structs,anio,lat,long,radio,n):
             else:
                 evento_entry = me.getValue(entry)  
                 lt.addLast(evento_entry["lst_events"], valor)
-                
-    for i in lt.iterator(om.keySet(maps_date)): 
+    mayor = 0            
+    tamanio = 0            
+    for i in lt.iterator(om.keySet(maps_date)):
+        tamanio += 1 
         valor_new =  om.get(maps_date,i)
         dict_append = {}
         dict_append["time"] = i
@@ -371,6 +385,8 @@ def req_6(data_structs,anio,lat,long,radio,n):
         for y in lt.iterator(valor_new['value']['lst_events']):
                 dict_append["size"] += 1 
                 dict_new = {}   
+                if float(y["mag"]) > mayor:
+                    mayor = float(y["mag"])
                 dict_new["mag"] =  y["mag"]
                 dict_new["time"] =  y["time"]
                 dict_new["cdi"] =  y["cdi"]
@@ -387,7 +403,17 @@ def req_6(data_structs,anio,lat,long,radio,n):
                 dict_new["sig"] =  y["sig"]    
                 dict_append["details"].append(dict_new)
         lt.addLast(presentacion,dict_new)
-    return dict_append["size"]
+    pos = 0
+    pos_i = 0
+    for i in lt.iterator(presentacion):
+        pos += 1
+        
+        if i["mag"] == mayor:
+            pos_i = pos
+            principal = []
+            principal.append(i)
+    lt.deleteElement(presentacion,pos_i)
+    return principal, presentacion, tamanio
 
 def req_7(data_structs):
     """
@@ -413,6 +439,7 @@ def compare(data_1, data_2):
     pass
 
 # Funciones de ordenamiento
+
 def data_sizel(data_structs):
     """
     Retorna el tamaño de la lista de datos
@@ -478,3 +505,8 @@ def compareDates_req1(date1, date2):
     Compara dos fechas
     """
     return (date1["time"] > date2["time"])
+def compareMag_req2(date1, date2):
+    """
+    Compara dos fechas
+    """
+    return (date1["mag"] > date2["mag"])

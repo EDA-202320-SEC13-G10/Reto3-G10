@@ -89,20 +89,27 @@ def req_1(control,initialDate,finalDate):
     return L1, L2, L3
 
 
-def req_2(control):
+def req_2(control,mag_i,mag_f):
     """
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    pass
+    L1, L2, L3 = model.req_2(control,mag_i,mag_f)
+    if L2 >6:
+            L1 = model.first_last3(L1)
 
+    return L1, L2, L3
 
-def req_3(control):
+def req_3(control,mag_i,depth_max):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    pass
+    L1, L2, L3 = model.req_3(control,mag_i,depth_max)
+    if L2 >6:
+            L1 = model.first_last3(L1)
+
+    return L1, L2, L3
 
 
 def req_4(control):
@@ -112,7 +119,6 @@ def req_4(control):
     # TODO: Modificar el requerimiento 4
     pass
 
-
 def req_5(control):
     """
     Retorna el resultado del requerimiento 5
@@ -120,12 +126,16 @@ def req_5(control):
     # TODO: Modificar el requerimiento 5
     pass
 
-def req_6(control):
+def req_6(control,anio,lat,long,radio,n):
     """
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    pass
+    L1, L2, L3 = model.req_6(control,anio,lat,long,radio,n)
+    if L3 > n:
+        L2 = model.sublista(L2,1,n)
+    return L1, L2, L3
+
 
 
 def req_7(control):

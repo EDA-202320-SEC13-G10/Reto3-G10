@@ -111,26 +111,46 @@ def print_req_2(control):
     """
     # TODO: Imprimir el resultado del requerimiento 2
     print("Req No. 2 Input".center(130,"="))
+    mag_i =  float(input("Magnitud inicial: "))
+    mag_f =  float(input("Magnitud final: "))
+    print("Req No. 2 Results".center(130,"="))
+    l1,l2,l3= controller.req_2(control,mag_i,mag_f)
 
-    initialDate =  input("Total diffrent magnitudes: ")
-    finalDate =  input("End date: ")
-
+    print(("Total different magnitudes: " +str(l2)))
+    print(("Total events between magnitudes: " +str(l3)))
+    print("Consults has "+ "'"+str(l2)+"'"+" results")
+    if l3 > 6:
+        
+        print("Consults size: "+ str(l2) +" Only first and last '3' results are:")
+    else:
+        print("Consults size: "+ str(l2))
+    print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
 
 def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    pass
-
-
+    print("Req No. 3 Input".center(130,"="))
+    mag_i =  float(input("Min magnitude: "))
+    depth_f =  float(input("Max depth: "))
+    print("Req No. 3 Results".center(130,"="))
+    l1,l2,l3= controller.req_3(control,mag_i,depth_f)
+    print(("Total different dates: " +str(l2)))
+    print(("Total events between dates: " +str(l3)))
+    print("Consults has '10' results")
+    if l3 > 6:
+        
+        print("Consults size: "+ str(l2) +" Only first and last '3' results are:")
+    else:
+        print("Consults size: "+ str(l2))
+    print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
     pass
-
 
 def print_req_5(control):
     """
@@ -139,13 +159,26 @@ def print_req_5(control):
     # TODO: Imprimir el resultado del requerimiento 5
     pass
 
-
 def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    print("Req No. 6 Input".center(130,"="))
+    anio =  (input("Año: "))
+    lat =  (input("lat: "))
+    long =  (input("long: "))
+    radio =  float(input("Radio: "))
+    n =  int(input("Numero de sismos cercanos: "))
+
+    print("Req No. 6 Results".center(130,"="))
+    l1,l2,l3= controller.req_6(control,anio,lat,long,radio,n)
+
+    print("Terremotos totales en el area para el año "+ str(anio)+": " +str(l3))
+    print("Terremoto mas significativo")
+    print(tabulate(l1,headers="keys", tablefmt = "grid", showindex=False))
+    print("Los 5 terremotos mas proximos cronologicamente")
+    print(print(tabulate(lt.iterator(l2),headers="keys", tablefmt = "grid", showindex=False)))
 
 
 def print_req_7(control):
