@@ -121,7 +121,7 @@ def req_4(control, sig_min, gap_max):
     return cant, sig_y_max
 
 
-def req_5(control):
+def req_5(control, min_depth, min_nst):
     """
     Retorna el resultado del requerimiento 5
     """

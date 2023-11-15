@@ -152,7 +152,7 @@ def print_req_3(control):
     pass
 
 
-def print_req_4(control):
+def print_req_4(control, sig_min, gap_max):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
