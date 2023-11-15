@@ -39,6 +39,7 @@ from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as se
 from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
+import time as tm
 import datetime
 import math
 import folium
@@ -68,7 +69,6 @@ def new_data_structs():
     data["datos_lobby"] = lt.newList("ARRAY_LIST")
     data["date_Index"] =  om.newMap(omaptype="BST")
     data["mag_Index"] =  om.newMap(omaptype="BST")
-    data["anio_Index"] =  om.newMap(omaptype="BST")
     return data
 
 # Funciones para agregar informacion al modelo
@@ -165,6 +165,47 @@ def new_anio_Entry(evento):
     lt.addLast(entry["lst_events"], evento)
     return entry
 
+def update_gap_Index(map, evento):
+    gap  = evento["gap"]
+    entry = om.get(map,gap)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,gap,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def update_sig_Index(map, evento):
+    sig  = evento["sig"]
+    entry = om.get(map,sig)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,sig,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def update_depth_Index(map, evento):
+    depth  = evento["depth"]
+    entry = om.get(map,depth)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,depth,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+def update_nst_Index(map, evento):
+    nst  = evento["nst"]
+    entry = om.get(map,nst)
+    if entry is None:
+        evento_entry = new_Data_Entry(evento)
+        om.put(map,nst,evento_entry)
+    else:
+        evento_entry = me.getValue(entry)    
+    return map
+
+
 def new_Data_Entry(evento):
     entry = { "lst_events": None}
 
@@ -246,6 +287,8 @@ def req_2(data_structs, lim_inf,lim_sup):
     for lstdate in lt.iterator(lst):
         totalevents += lt.size(lstdate["lst_events"])
     h = lt.newList("ARRAY_LIST")
+    lista_folium = []
+
     for l in lt.iterator(lst1):
         k = {}
         events_in_l = om.get(data_structs["mag_Index"],l)
@@ -253,6 +296,8 @@ def req_2(data_structs, lim_inf,lim_sup):
         k["events"] = lt.size(events_in_l['value']['lst_events'])
         k["details"] = lt.newList("ARRAY_LIST")
         for y in events_in_l['value']['lst_events']["elements"]:
+            lista_per_lista =[y["lat"],y["long"]]
+            lista_folium.append(lista_per_lista)   
             dict_new = {}
             dict_new["time"] =  y["time"]
             dict_new["lat"] =  y["lat"]
@@ -276,7 +321,7 @@ def req_2(data_structs, lim_inf,lim_sup):
     
     quk.sort(h,compareMag_req2)
 
-    return h , totalmags,totalevents
+    return h , totalmags,totalevents, lista_folium
 
 def req_3(data_structs, mag_min, depth_max):
     """
@@ -285,63 +330,40 @@ def req_3(data_structs, mag_min, depth_max):
     lst1 = om.keys(data_structs["mag_Index"], mag_min, 10.000)
 
     # TODO: Realizar el requerimiento 3
+    pass
 
-    lista_tabla = lt.newList("ARRAY_LIST")
-    d_dates = 0
-    d_events = 0
-    mp1 = om.newMap(omaptype = 'RBT')
-    for l in lt.iterator(lst1):
-        events_in_l = om.get(data_structs["mag_Index"],l)
-        for y in events_in_l['value']['lst_events']["elements"]:
-            if y["depth"] <= depth_max:
-                fecha = (y["time"])[:16]
-                entry = om.get(mp1,fecha)
-                if entry is None:
-                    fecha_entry = new_Data_Entry(y)
-                    om.put(mp1,fecha,fecha_entry)
-                else:
-                    fecha_entry = me.getValue(entry)
-                    lt.addLast(fecha_entry["lst_events"], y)
-    lst_key_mp1 = om.keySet(mp1)
-    d_dates = lt.size(lst_key_mp1)
-    for key in lt.iterator(lst_key_mp1):
-        dict_append = {}
-        valor =  om.get(mp1,key)
-        size = lt.size(valor['value']['lst_events'])
-        dict_append["time"] = key
-        dict_append["events"] = size
-        d_events += size
-        dict_append["details"] = []
-        for y in lt.iterator(valor['value']['lst_events']):
-                dict_new = {}
-                dict_new["mag"] =  y["mag"]
-                dict_new["lat"] =  y["lat"]
-                dict_new["long"] =  y["long"]
-                dict_new["depth"] =  y["depth"]
-                dict_new["sig"] =  y["sig"]
-                dict_new["gap"] =  y["gap"]
-                dict_new["nst"] =  y["nst"]
-                dict_new["title"] =  y["title"]
-                dict_new["cdi"] =  y["cdi"]
-                dict_new["mmi"] =  y["mmi"]
-                dict_new["magType"] =  y["magType"]
-                dict_new["type"] =  y["type"]
-                dict_new["code"] =  y["code"]
-                dict_append["details"].append(dict_new)
-        dict_append["details"] =  tabulate(dict_append["details"], headers="keys", tablefmt="grid", showindex= False)
-        lt.addLast(lista_tabla,dict_append)
-    quk.sort(lista_tabla,compareDates_req1)    
 
-    return lista_tabla,d_dates,d_events
-
-def req_4(data_structs):
+def req_4(data_structs, sig_min, gap_max):
     """
     Función que soluciona el requerimiento 4
     """
     # TODO: Realizar el requerimiento 4
-    pass
+    dat = data_structs["gap_Index"]
+    datos = om.valueSet(dat)
+    sig_y_gap = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(datos):
+        for j in i["lst_events"]["elements"]:
+            if j["gap"] != "Unknown" and j["sig"] != "Unknown":
+                if float(j["gap"]) <= gap_max and float(j["sig"]) >= sig_min:
+                    x = {}
+                    x["time"] = j["time"]
+                    x["mag"] = j["mag"]
+                    x["lat"] = j["lat"]
+                    x["long"] = j["long"]
+                    x["depth"] = j["depth"]
+                    x["sig"] = j["sig"]
+                    x["gap"] = j["gap"]
+                    x["nst"] = j["nst"]
+                    x["title"] = j["title"]
+                    x["cdi"] = j["cdi"]
+                    x["magType"] = j["magType"]
+                    x["type"] = j["type"]
+                    x["code"] = j["code"]
+                    lt.addLast(sig_y_gap, x)
+    return lt.size(sig_y_gap), sig_y_gap
+                
 
-def req_5(data_structs):
+def req_5(data_structs, min_depth, min_nst):
     """
     Función que soluciona el requerimiento 5
     """
@@ -363,67 +385,10 @@ def req_6(data_structs,anio,lat,long,radio,n):
     """
 
     # TODO: Realizar el requerimiento 6
-    data =  data_structs["anio_Index"]
-    maps_date  = om.newMap(omaptype="BST")
-    anio_lst = om.get(data,anio)
-    presentacion = lt.newList()
-    for valor in lt.iterator(anio_lst['value']['lst_events']):
-        valor_haversine = haversine(float(lat),float(long),float(valor["lat"]),float(valor["long"]))
-        if valor_haversine <=  radio:
-            ocurredTime  = valor["time"]
-            ocurredTime  = ocurredTime[:16] 
-            entry = om.get(maps_date,ocurredTime)
-            if entry is None:
-                evento_entry = new_Data_Entry(valor)
-                om.put(maps_date,ocurredTime,evento_entry)
-            else:
-                evento_entry = me.getValue(entry)  
-                lt.addLast(evento_entry["lst_events"], valor)
-    mayor = 0            
-    tamanio = 0            
-    for i in lt.iterator(om.keySet(maps_date)):
-        tamanio += 1 
-        valor_new =  om.get(maps_date,i)
-        dict_append = {}
-        dict_append["time"] = i
-        dict_append["size"] = 0
-        dict_append["details"] = []
-        for y in lt.iterator(valor_new['value']['lst_events']):
-                dict_append["size"] += 1 
-                dict_new = {}   
-                if float(y["mag"]) > mayor:
-                    mayor = float(y["mag"])
-                dict_new["mag"] =  y["mag"]
-                dict_new["time"] =  y["time"]
-                dict_new["cdi"] =  y["cdi"]
-                dict_new["mmi"] =  y["mmi"]
-                dict_new["code"] =  y["code"]
-                dict_new["nst"] =  y["nst"]
-                dict_new["gap"] =  y["gap"]
-                dict_new["magType"] =  y["magType"]
-                dict_new["type"] =  y["type"]
-                dict_new["title"] =  y["title"]
-                dict_new["lat"] =  y["lat"]
-                dict_new["long"] =  y["long"]
-                dict_new["depth"] =  y["depth"]
-                dict_new["sig"] =  y["sig"]    
-                dict_append["details"].append(dict_new)
-        lt.addLast(presentacion,dict_new)
-    pos = 0
-    pos_i = 0
-    for i in lt.iterator(presentacion):
-        pos += 1
-        
-        if i["mag"] == mayor:
-            pos_i = pos
-            principal = []
-            principal.append(i)
-    lt.deleteElement(presentacion,pos_i)
-    if lt.size(presentacion) > n:
-        presentacion = sublista(presentacion,1,n)
-    return principal, presentacion, tamanio
+    pass
 
-def req_7(data_structs):
+
+def req_7(data_structs, year, area, prop, bi):
     """
     Función que soluciona el requerimiento 7
     """

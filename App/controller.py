@@ -94,11 +94,11 @@ def req_2(control,mag_i,mag_f):
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    L1, L2, L3 = model.req_2(control,mag_i,mag_f)
+    L1, L2, L3,lista_folium = model.req_2(control,mag_i,mag_f)
     if L2 >6:
             L1 = model.first_last3(L1)
 
-    return L1, L2, L3
+    return L1, L2, L3, lista_folium
 
 def req_3(control,mag_i,depth_max):
     """
@@ -112,19 +112,22 @@ def req_3(control,mag_i,depth_max):
     return L1, L2, L3
 
 
-def req_4(control):
+def req_4(control, sig_min, gap_max):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    pass
+    cant, sig_y_max = model.req_4(control, sig_min, gap_max)
+    return cant, sig_y_max
+
 
 def req_5(control):
     """
     Retorna el resultado del requerimiento 5
     """
     # TODO: Modificar el requerimiento 5
-    pass
+    cant, dep_y_nst = model.req_5(control, min_depth, min_nst)
+    return cant, dep_y_nst
 
 def req_6(control,anio,lat,long,radio,n):
     """
@@ -137,13 +140,13 @@ def req_6(control,anio,lat,long,radio,n):
 
 
 
-def req_7(control):
+def req_7(control, year, area, prop, bi):
     """
     Retorna el resultado del requerimiento 7
     """
     # TODO: Modificar el requerimiento 7
-    pass
-
+    cant_year, cant_hist, min_value, max_value, hist_list = model.req_7(control, year, area, prop, bi)
+    return cant_year, cant_hist, min_value, max_value, hist_list
 
 def req_8(control):
     """
