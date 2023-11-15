@@ -105,7 +105,6 @@ def print_req_1(control):
         print("Consults size: "+ str(l3))
  
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
-    
     m = fol.Map(tiles="cartodbpositron")
 
     geojson_data = requests.get(
@@ -133,7 +132,7 @@ def print_req_2(control):
     mag_i =  float(input("Magnitud inicial: "))
     mag_f =  float(input("Magnitud final: "))
     print("Req No. 2 Results".center(130,"="))
-    l1,l2,l3,foliumsLista= controller.req_2(control,mag_i,mag_f)
+    l1,l2,l3= controller.req_2(control,mag_i,mag_f)
 
     print(("Total different magnitudes: " +str(l2)))
     print(("Total events between magnitudes: " +str(l3)))
@@ -144,39 +143,32 @@ def print_req_2(control):
     else:
         print("Consults size: "+ str(l2))
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
-    m = fol.Map(tiles="cartodbpositron")
 
-    geojson_data = requests.get(
-    "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/world_countries.json"
-).json()
-    fol.GeoJson(geojson_data, name="hello world").add_to(m)
-
-    fol.LayerControl().add_to(m)
-
-    for i in (foliumsLista):
-            fol.Marker(
-                location=i,
-                icon=fol.Icon(icon="cloud"),
-            ).add_to(m)
-    m.save("footprint.html")
-    webbrowser.open("footprint.html")
 def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    pass
-
-
+    print("Req No. 3 Input".center(130,"="))
+    mag_i =  float(input("Min magnitude: "))
+    depth_f =  float(input("Max depth: "))
+    print("Req No. 3 Results".center(130,"="))
+    l1,l2,l3= controller.req_3(control,mag_i,depth_f)
+    print(("Total different dates: " +str(l2)))
+    print(("Total events between dates: " +str(l3)))
+    print("Consults has '10' results")
+    if l3 > 6:
+        
+        print("Consults size: "+ str(l2) +" Only first and last '3' results are:")
+    else:
+        print("Consults size: "+ str(l2))
+    print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    cant, sig_y_max = controller.req_4(control, sig_min, gap_max)
-    print(cant)
-    # print(tabulate(lt.iterator(sig_y_max),headers="keys", tablefmt = "grid", showindex=False))
-
+    pass
 
 def print_req_5(control):
     """
@@ -184,7 +176,6 @@ def print_req_5(control):
     """
     # TODO: Imprimir el resultado del requerimiento 5
     pass
-
 
 def print_req_6(control):
     """
@@ -208,17 +199,13 @@ def print_req_6(control):
     print(print(tabulate(lt.iterator(l2),headers="keys", tablefmt = "grid", showindex=False)))
 
 
-def print_req_7(control, year, area, prop, bi):
+def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    cant_year, cant_hist, min_value, max_value, hist_list = controller.req_7(control, year, area, prop, bi)
-    print(cant_year)
-    print(cant_hist)
-    print(min_value)
-    print(max_value)
-    print(tabulate(lt.iterator(hist_list),headers="keys", tablefmt = "grid", showindex=False))
+    pass
+
 
 def print_req_8(control):
     """
@@ -252,7 +239,7 @@ if __name__ == "__main__":
             print("EARTHQUAKE RECORDS REPORT")
             print("".center(100,"="))
             print("Printing the first 5 and last 5 records...\n")
-            z = controller.primernos_fiuankes(data["mag_lobby"])
+            z = controller.primernos_fiuankes(data["datos_lobby"])
             print(tabulate(lt.iterator(z),headers="keys", tablefmt = "grid", showindex=False))
         elif int(inputs) == 2:
             print_req_1(control)
@@ -265,16 +252,16 @@ if __name__ == "__main__":
             print_req_3(control)
 
         elif int(inputs) == 5:
-            print_req_4(control, 300, 45)
+            print_req_4(control)
 
         elif int(inputs) == 6:
-            print_req_5(control, 23, 38)
+            print_req_5(control)
 
         elif int(inputs) == 7:
             print_req_6(control)
 
         elif int(inputs) == 8:
-            print_req_7(control, 2020, "Alaska", "mag", 10)
+            print_req_7(control)
 
         elif int(inputs) == 9:
             print_req_8(control)
