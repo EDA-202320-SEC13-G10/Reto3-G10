@@ -69,12 +69,6 @@ def new_data_structs():
     data["datos_lobby"] = lt.newList("ARRAY_LIST")
     data["date_Index"] =  om.newMap(omaptype="BST")
     data["mag_Index"] =  om.newMap(omaptype="BST")
-    data["gap_Index"] =  om.newMap(omaptype="BST")
-    data["sig_Index"] =  om.newMap(omaptype="BST")
-    data["depth_Index"] =  om.newMap(omaptype="BST")
-    data["nst_Index"] =  om.newMap(omaptype="BST")
-    data["no_Index"] =  om.newMap(omaptype="BST")
-    data["anio_Index"] =  om.newMap(omaptype="BST")
     return data
 
 # Funciones para agregar informacion al modelo
@@ -95,7 +89,7 @@ def add_data(data_structs, data):
             "long","lat","depth"]    
     for i in keys:
         if data[i] in lista_posible:
-            data[i] = "Unknnown"
+            data[i] = "Unknown"
     datos_lobby = {} 
     datos_lobby["code"] =  data["code"]
     datos_lobby["time"] =  (data["time"])[:16]
@@ -117,11 +111,6 @@ def add_data(data_structs, data):
     update_mag_Index(data_structs["mag_Index"], data)
     update_anio_Index(data_structs["anio_Index"], data)
     
-    update_gap_Index(data_structs["gap_Index"], data)
-    update_sig_Index(data_structs["sig_Index"], data)
-    update_depth_Index(data_structs["depth_Index"], data)
-    update_nst_Index(data_structs["nst_Index"], data)
-
 # Funciones para creacion de datos
 
 def new_data(id, info):
