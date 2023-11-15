@@ -132,8 +132,7 @@ def req_6(control,anio,lat,long,radio,n):
     """
     # TODO: Modificar el requerimiento 6
     L1, L2, L3 = model.req_6(control,anio,lat,long,radio,n)
-    if L3 > n:
-        L2 = model.sublista(L2,1,n)
+
     return L1, L2, L3
 
 

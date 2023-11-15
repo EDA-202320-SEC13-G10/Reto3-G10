@@ -413,6 +413,8 @@ def req_6(data_structs,anio,lat,long,radio,n):
             principal = []
             principal.append(i)
     lt.deleteElement(presentacion,pos_i)
+    if lt.size(presentacion) > n:
+        presentacion = sublista(presentacion,1,n)
     return principal, presentacion, tamanio
 
 def req_7(data_structs):
