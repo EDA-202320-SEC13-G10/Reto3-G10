@@ -69,6 +69,7 @@ def new_data_structs():
     data["datos_lobby"] = lt.newList("ARRAY_LIST")
     data["date_Index"] =  om.newMap(omaptype="BST")
     data["mag_Index"] =  om.newMap(omaptype="BST")
+    data["anio_Index"] =  om.newMap(omaptype="BST")
     return data
 
 # Funciones para agregar informacion al modelo
@@ -364,7 +365,29 @@ def req_5(data_structs, min_depth, min_nst):
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
-    pass
+    dat = data_structs["nst_Index"]
+    datos = om.valueSet(dat)
+    dep_nst = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(datos):
+        for j in i["lst_events"]["elements"]:
+            if j["depth"] != "Unknown" and j["nst"] != "Unknown":
+                if float(j["depth"]) >= min_depth and float(j["nst"]) >= min_nst:
+                    x = {}
+                    x["time"] = j["time"]
+                    x["mag"] = j["mag"]
+                    x["lat"] = j["lat"]
+                    x["long"] = j["long"]
+                    x["depth"] = j["depth"]
+                    x["sig"] = j["sig"]
+                    x["gap"] = j["gap"]
+                    x["nst"] = j["nst"]
+                    x["title"] = j["title"]
+                    x["cdi"] = j["cdi"]
+                    x["magType"] = j["magType"]
+                    x["type"] = j["type"]
+                    x["code"] = j["code"]
+                    lt.addLast(dep_nst, x)
+    return lt.size(dep_nst), dep_nst
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371 # Radius of the Earth in km
@@ -381,7 +404,65 @@ def req_6(data_structs,anio,lat,long,radio,n):
     """
 
     # TODO: Realizar el requerimiento 6
-    pass
+    data =  data_structs["anio_Index"]
+    maps_date  = om.newMap(omaptype="BST")
+    anio_lst = om.get(data,anio)
+    presentacion = lt.newList()
+    for valor in lt.iterator(anio_lst['value']['lst_events']):
+        valor_haversine = haversine(float(lat),float(long),float(valor["lat"]),float(valor["long"]))
+        if valor_haversine <=  radio:
+            ocurredTime  = valor["time"]
+            ocurredTime  = ocurredTime[:16] 
+            entry = om.get(maps_date,ocurredTime)
+            if entry is None:
+                evento_entry = new_Data_Entry(valor)
+                om.put(maps_date,ocurredTime,evento_entry)
+            else:
+                evento_entry = me.getValue(entry)  
+                lt.addLast(evento_entry["lst_events"], valor)
+    mayor = 0            
+    tamanio = 0            
+    for i in lt.iterator(om.keySet(maps_date)):
+        tamanio += 1 
+        valor_new =  om.get(maps_date,i)
+        dict_append = {}
+        dict_append["time"] = i
+        dict_append["size"] = 0
+        dict_append["details"] = []
+        for y in lt.iterator(valor_new['value']['lst_events']):
+                dict_append["size"] += 1 
+                dict_new = {}   
+                if float(y["mag"]) > mayor:
+                    mayor = float(y["mag"])
+                dict_new["mag"] =  y["mag"]
+                dict_new["time"] =  y["time"]
+                dict_new["cdi"] =  y["cdi"]
+                dict_new["mmi"] =  y["mmi"]
+                dict_new["code"] =  y["code"]
+                dict_new["nst"] =  y["nst"]
+                dict_new["gap"] =  y["gap"]
+                dict_new["magType"] =  y["magType"]
+                dict_new["type"] =  y["type"]
+                dict_new["title"] =  y["title"]
+                dict_new["lat"] =  y["lat"]
+                dict_new["long"] =  y["long"]
+                dict_new["depth"] =  y["depth"]
+                dict_new["sig"] =  y["sig"]    
+                dict_append["details"].append(dict_new)
+        lt.addLast(presentacion,dict_new)
+    pos = 0
+    pos_i = 0
+    for i in lt.iterator(presentacion):
+        pos += 1
+        
+        if i["mag"] == mayor:
+            pos_i = pos
+            principal = []
+            principal.append(i)
+    lt.deleteElement(presentacion,pos_i)
+    if lt.size(presentacion) > n:
+        presentacion = sublista(presentacion,1,n)
+    return principal, presentacion, tamanio
 
 
 def req_7(data_structs, year, area, prop, bi):
@@ -389,7 +470,34 @@ def req_7(data_structs, year, area, prop, bi):
     Función que soluciona el requerimiento 7
     """
     # TODO: Realizar el requerimiento 7
-    pass
+    dat = data_structs["date_Index"]
+    datos = om.valueSet(dat)
+    hist_list = lt.newList("ARRAY_LIST")
+    values = []
+    cant_year = 0
+    cant_hist = 0
+    for i in lt.iterator(datos):
+        for j in i["lst_events"]["elements"]:
+            if j["time"] != "Unknown" and j["title"] != "Unknown" and j[prop] != "Unknown":
+                if float(j["time"][:4]) == year:
+                    cant_year += 1
+                    if area in j["title"]:
+                        cant_hist += 1
+                        x = {}
+                        x["time"] = j["time"]
+                        x["mag"] = j["mag"]
+                        x["lat"] = j["lat"]
+                        x["long"] = j["long"]
+                        x["depth"] = j["depth"]
+                        x["sig"] = j["sig"]
+                        x["gap"] = j["gap"]
+                        x["nst"] = j["nst"]
+                        x["title"] = j["title"]
+                        x["code"] = j["code"]
+                        x[prop] = j[prop]
+                        lt.addLast(hist_list, x)
+                        values.append(float(j[prop]))
+    return cant_year, cant_hist, min(values), max(values), hist_list
 
 def req_8(data_structs):
     """
