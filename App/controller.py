@@ -112,22 +112,19 @@ def req_3(control,mag_i,depth_max):
     return L1, L2, L3
 
 
-def req_4(control, sig_min, gap_max):
+def req_4(control):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    cant, sig_y_max = model.req_4(control, sig_min, gap_max)
-    return cant, sig_y_max
-
+    pass
 
 def req_5(control, min_depth, min_nst):
     """
     Retorna el resultado del requerimiento 5
     """
     # TODO: Modificar el requerimiento 5
-    cant, dep_y_nst = model.req_5(control, min_depth, min_nst)
-    return cant, dep_y_nst
+    pass
 
 def req_6(control,anio,lat,long,radio,n):
     """
@@ -140,13 +137,13 @@ def req_6(control,anio,lat,long,radio,n):
 
 
 
-def req_7(control, year, area, prop, bi):
+def req_7(control):
     """
     Retorna el resultado del requerimiento 7
     """
     # TODO: Modificar el requerimiento 7
-    cant_year, cant_hist, min_value, max_value, hist_list = model.req_7(control, year, area, prop, bi)
-    return cant_year, cant_hist, min_value, max_value, hist_list
+    pass
+
 
 def req_8(control):
     """
