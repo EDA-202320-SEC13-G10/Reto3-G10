@@ -165,26 +165,18 @@ def print_req_3(control):
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    print("Req No. 3 Input".center(130,"="))
-    mag_i =  float(input("Min magnitude: "))
-    depth_f =  float(input("Max depth: "))
-    print("Req No. 3 Results".center(130,"="))
-    l1,l2,l3= controller.req_3(control,mag_i,depth_f)
-    print(("Total different dates: " +str(l2)))
-    print(("Total events between dates: " +str(l3)))
-    print("Consults has '10' results")
-    if l3 > 6:
-        
-        print("Consults size: "+ str(l2) +" Only first and last '3' results are:")
-    else:
-        print("Consults size: "+ str(l2))
-    print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
+    pass
+
+
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    cant, sig_y_max = controller.req_4(control, sig_min, gap_max)
+    print(cant)
+    # print(tabulate(lt.iterator(sig_y_max),headers="keys", tablefmt = "grid", showindex=False))
+
 
 def print_req_5(control):
     """
@@ -192,6 +184,7 @@ def print_req_5(control):
     """
     # TODO: Imprimir el resultado del requerimiento 5
     pass
+
 
 def print_req_6(control):
     """
@@ -215,13 +208,17 @@ def print_req_6(control):
     print(print(tabulate(lt.iterator(l2),headers="keys", tablefmt = "grid", showindex=False)))
 
 
-def print_req_7(control):
+def print_req_7(control, year, area, prop, bi):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 7
-    pass
-
+    cant_year, cant_hist, min_value, max_value, hist_list = controller.req_7(control, year, area, prop, bi)
+    print(cant_year)
+    print(cant_hist)
+    print(min_value)
+    print(max_value)
+    print(tabulate(lt.iterator(hist_list),headers="keys", tablefmt = "grid", showindex=False))
 
 def print_req_8(control):
     """
@@ -255,7 +252,7 @@ if __name__ == "__main__":
             print("EARTHQUAKE RECORDS REPORT")
             print("".center(100,"="))
             print("Printing the first 5 and last 5 records...\n")
-            z = controller.primernos_fiuankes(data["datos_lobby"])
+            z = controller.primernos_fiuankes(data["mag_lobby"])
             print(tabulate(lt.iterator(z),headers="keys", tablefmt = "grid", showindex=False))
         elif int(inputs) == 2:
             print_req_1(control)
@@ -268,16 +265,16 @@ if __name__ == "__main__":
             print_req_3(control)
 
         elif int(inputs) == 5:
-            print_req_4(control)
+            print_req_4(control, 300, 45)
 
         elif int(inputs) == 6:
-            print_req_5(control)
+            print_req_5(control, 23, 38)
 
         elif int(inputs) == 7:
             print_req_6(control)
 
         elif int(inputs) == 8:
-            print_req_7(control)
+            print_req_7(control, 2020, "Alaska", "mag", 10)
 
         elif int(inputs) == 9:
             print_req_8(control)
