@@ -1,10 +1,19 @@
-import datetime
-h = "1995-12-26T14:50:17.170000Z"
 
+import folium
+m = folium.Map([45.35, -121.6972], zoom_start=12)
 
+folium.Marker(
+    location=[45.3288, -121.6625],
+    tooltip="Click me!",
+    popup="Mt. Hood Meadows",
+    icon=folium.Icon(icon="cloud"),
+).add_to(m)
 
-ocurredTime  = h[:16] 
-ocurredTime = datetime.datetime.strptime(ocurredTime , "%Y-%m-%dT%H:%M")
-h = h[:16]
-print(h)
-print(5==5.000)
+folium.Marker(
+    location=[45.3311, -121.7113],
+    tooltip="Click me!",
+    popup="Timberline Lodge",
+    icon=folium.Icon(color="green"),
+).add_to(m)
+
+print(m)

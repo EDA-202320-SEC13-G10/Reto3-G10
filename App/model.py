@@ -41,6 +41,7 @@ from DISClib.Algorithms.Sorting import mergesort as merg
 from DISClib.Algorithms.Sorting import quicksort as quk
 import datetime
 import math
+import folium
 from tabulate import tabulate
 
 assert cf
@@ -88,7 +89,7 @@ def add_data(data_structs, data):
             "long","lat","depth"]    
     for i in keys:
         if data[i] in lista_posible:
-            data[i] = "Unkown"
+            data[i] = "Unknown"
     datos_lobby = {} 
     datos_lobby["code"] =  data["code"]
     datos_lobby["time"] =  (data["time"])[:16]
@@ -198,9 +199,10 @@ def req_1(data_structs,initialDate,finalDate):
     diferent_dates = lt.size(lst1)
     totalevents = 0
     h = lt.newList("ARRAY_LIST")
-
+    lista_folium = []
     for l in lt.iterator(lst1):
         k = {}
+        
         events_in_l = om.get(data_structs["date_Index"],l)
         k["time"] = l
         k["events"] = lt.size(events_in_l['value']['lst_events'])
@@ -208,6 +210,10 @@ def req_1(data_structs,initialDate,finalDate):
         k["details"] = []
         for y in events_in_l['value']['lst_events']["elements"]:
             dict_new = {}
+            lista_per_lista =[y["lat"],y["long"]]
+
+
+            lista_folium.append(lista_per_lista)    
             dict_new["mag"] =  y["mag"]
             dict_new["lat"] =  y["lat"]
             dict_new["long"] =  y["long"]
@@ -226,7 +232,7 @@ def req_1(data_structs,initialDate,finalDate):
         lt.addLast(h,k)
     quk.sort(h,compareDates_req1)
     
-    return h, totalevents, diferent_dates
+    return h, totalevents, diferent_dates, lista_folium
 
 def req_2(data_structs, lim_inf,lim_sup):
     """

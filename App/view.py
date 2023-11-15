@@ -29,8 +29,11 @@ from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 assert cf
+import folium as fol
 from tabulate import tabulate
 import traceback
+import requests
+import webbrowser
 
 """
 La vista se encarga de la interacción con el usuario
@@ -90,7 +93,7 @@ def print_req_1(control):
 
     initialDate = "1999-03-21T05:00"
     finalDate = "2004-10-23T17:30"
-    l1,l2,l3= controller.req_1(control,initialDate,finalDate)
+    l1,l2,l3,foliumsLista= controller.req_1(control,initialDate,finalDate)
     print("Req No. 1 Results".center(130,"="))
     print(("Total different dates: " +str(l3)))
     print(("Total events between dates: " +str(l2)))
@@ -102,7 +105,22 @@ def print_req_1(control):
         print("Consults size: "+ str(l3))
  
     print(tabulate(lt.iterator(l1),headers="keys", tablefmt = "grid", showindex=False))
+    m = fol.Map(tiles="cartodbpositron")
 
+    geojson_data = requests.get(
+    "https://raw.githubusercontent.com/python-visualization/folium-example-data/main/world_countries.json"
+).json()
+    fol.GeoJson(geojson_data, name="hello world").add_to(m)
+
+    fol.LayerControl().add_to(m)
+
+    for i in (foliumsLista):
+            fol.Marker(
+                location=i,
+                icon=fol.Icon(icon="cloud"),
+            ).add_to(m)
+    m.save("footprint.html")
+    webbrowser.open("footprint.html")
 
 
 def print_req_2(control):
