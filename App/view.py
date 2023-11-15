@@ -117,7 +117,7 @@ def print_req_1(control):
     for i in (foliumsLista):
             fol.Marker(
                 location=i,
-                icon=fol.Icon(icon="cloud"),
+                icon=fol.Icon(icon="cloud",color="green"),
             ).add_to(m)
     m.save("footprint.html")
     webbrowser.open("footprint.html")
